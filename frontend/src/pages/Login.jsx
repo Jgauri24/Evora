@@ -13,7 +13,7 @@ const Login = () => {
     setError("");
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:4000/api/auth/login", form);
+      const res = await axios.post("https://evora-vx66.onrender.com/api/auth/login", form);
       localStorage.setItem("token", res.data.token);
       navigate("/dashboard");
     } catch (err) {

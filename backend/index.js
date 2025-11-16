@@ -9,26 +9,23 @@ dotenv.config();
 const app = express();
 const prisma = new PrismaClient();
 
-app.use(cors({
-  origin: [
-    "http://localhost:5173",  // Local development
-    "https://evora-nine.vercel.app/",
-    "https://evora-git-main-jgauri24s-projects.vercel.app/",
-"https://evora-nine.vercel.app/",
-"https://evora-vx66.onrender.com"
-  ],
-  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-}));
 app.use(express.json());
 
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://evora-nine.vercel.app",
+      "https://evora-git-main-jgauri24s-projects.vercel.app",
+    ],
+    credentials: true,
+  })
+);
+
 function generateToken(user) {
-  return jwt.sign(
-    { id: user.id, email: user.email },
-    process.env.JWT_SECRET,
-    { expiresIn: "2d" }
-  );
+  return jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
+    expiresIn: "2d",
+  });
 }
 
 app.get("/api/auth/test", (req, res) => {
@@ -54,7 +51,8 @@ app.post("/api/auth/signup", async (req, res) => {
       token: generateToken(user),
       user,
     });
-  } catch {
+  } catch (err) {
+    console.error("Signup error:", err);
     return res.status(500).json({ message: "Server error" });
   }
 });
@@ -65,10 +63,12 @@ app.post("/api/auth/login", async (req, res) => {
     const { email, password } = req.body;
 
     const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) return res.status(400).json({ message: "Invalid email or password" });
+    if (!user)
+      return res.status(400).json({ message: "Invalid email or password" });
 
     const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(400).json({ message: "Invalid email or password" });
+    if (!match)
+      return res.status(400).json({ message: "Invalid email or password" });
 
     return res.json({
       message: "Login successful",
@@ -81,6 +81,8 @@ app.post("/api/auth/login", async (req, res) => {
 });
 
 // Server Start
-app.listen(process.env.PORT || 4000, () =>
-  console.log(`✅ Server running on ${process.env.PORT}`)
-);
+const PORT = process.env.PORT;
+
+app.listen(PORT || 4000, () => {
+  console.log(`🚀 Server running on ${PORT || 4000}`);
+});
