@@ -135,7 +135,7 @@ npm install
 Create .env file:
 DATABASE_URL="mysql://username:password@:port/dbname"
 JWT_SECRET="super-secret-token"
-PORT=5000
+PORT=4000
 
 Run Prisma:
 npx prisma migrate dev --name init
@@ -144,14 +144,14 @@ Start Backend:
 npm start
 
 
-Backend runs at: http://localhost:5000
+Backend runs at: http://localhost:4000
 
 🎨 Frontend Setup
 cd ../frontend
 npm install
 
 Optional .env file:
-REACT_APP_API_URL="http://localhost:5000"
+REACT_APP_API_URL="http://localhost:4000"
 
 Start Frontend:
 npm start
